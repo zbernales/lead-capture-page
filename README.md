@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Secco Squared - Lead Capture Task
 
-## Getting Started
+A full-stack lead capture application built with Next.js (App Router), Tailwind CSS, and Supabase.
 
-First, run the development server:
+## Architecture & Decisions
+* **Client-Side Validation:** The form validates emails and required fields locally before hitting the server.
+* **Server Actions:** Used a Next.js Server Action (`actions/submitLead.ts`) to handle the database mutation and the webhook side-effect securely on the backend.
+* **Database Security:** Enabled Row Level Security (RLS) on the `leads` table. Allowed anonymous users to `INSERT` records via the public client, but restricted `SELECT` access. The `/leads` dashboard uses a Server Component with the `service_role` key to bypass RLS, ensuring anonymous users cannot read the data from the client.
+* **Webhook Resilience:** The webhook `fetch` is wrapped in a try/catch block. If the webhook fails or the network drops, it logs the error to the server console but still returns a success state to the user, strictly adhering to the prompt requirements.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## How to run locally
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd <your-repo-folder>
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Install dependencies***
+    ```bash
+    npm install
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Database Setoup**
+    Create a new Supabase project. Open the SQL editor in your Supabase dashboard and run the SQL commands found in the schema.sql file located in the root of this repository.
+    
+4. **Environment Variables**
+    Create a `.env.local` file in the root directory and add Supabase credentials:
+    ```
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+    ```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. **Start the development server**
+    ```bash
+    npm run dev
+    ```
