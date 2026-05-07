@@ -1,6 +1,6 @@
 'use server'
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export type FormState = {
   success?: boolean;
@@ -18,7 +18,7 @@ export async function submitLeadAction(prevState: FormState, formData: FormData)
     return { error: 'Please fill out all required fields.' };
   }
 
-  const { data: lead, error: dbError } = await supabase
+  const { data: lead, error: dbError } = await supabaseAdmin
     .from('leads')
     .insert([{ full_name, email, company, source, message }])
     .select()
