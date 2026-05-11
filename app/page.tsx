@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { submitLeadAction } from '@/actions/submitLead';
 
 export default function Home() {
+  // Form UI states for handling loading, error feedback, and completion
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -12,10 +13,12 @@ export default function Home() {
     e.preventDefault();
     setError(null);
     
+    // Extract form data
     const form = e.currentTarget;
     const formData = new FormData(form);
     const email = formData.get('email') as string;
-
+    
+    // Client-side validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address.');
@@ -25,6 +28,7 @@ export default function Home() {
     setIsSubmitting(true);
 
     try {
+      // Execute the Next.js server action
       const result = await submitLeadAction({}, formData);
 
       if (result.error) {
@@ -40,6 +44,7 @@ export default function Home() {
     }
   }
 
+  // Render the success confirmation view if the lead was captured
   if (success) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -60,12 +65,14 @@ export default function Home() {
     );
   }
 
+  // Default render: The lead capture form
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Get in touch</h1>
         <p className="text-gray-600 mb-6 text-sm">Fill out the form below and our team will reach out.</p>
 
+        {/* Global form error feedback */}
         {error && (
           <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-md">
             {error}

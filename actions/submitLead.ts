@@ -32,6 +32,7 @@ export async function submitLeadAction(prevState: FormState, formData: FormData)
     return { error: 'Failed to save lead. Please try again later.' };
   }
 
+  // Forward lead to webhook
   try {
     const webhookResponse = await fetch('https://webhook-receiver-flax.vercel.app/api/lead-webhook', {
       method: 'POST',

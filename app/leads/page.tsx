@@ -1,13 +1,15 @@
 import { supabaseAdmin } from '@/lib/supabase';
 
+// Opt out of Next.js static rendering. 
 export const dynamic = 'force-dynamic';
 
 export default async function LeadsDashboard() {
   const { data: leads, error } = await supabaseAdmin
     .from('leads')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false }); // Sort newest to oldest
 
+  // Handle database connection issues or query failures 
   if (error) {
     return (
       <main className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
@@ -18,9 +20,12 @@ export default async function LeadsDashboard() {
     );
   }
 
+  // Dashboard UI
   return (
     <main className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
+        
+        {/* Header section with total count */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Leads Dashboard</h1>
           <div className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border border-gray-200">
@@ -28,6 +33,7 @@ export default async function LeadsDashboard() {
           </div>
         </div>
 
+        {/* Data Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -41,6 +47,8 @@ export default async function LeadsDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-sm">
+                
+                {/* Render empty state when there are 0 leads */}
                 {leads?.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-gray-500">
@@ -52,7 +60,9 @@ export default async function LeadsDashboard() {
                     <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
                       <td className="p-4 font-medium text-gray-900">{lead.full_name}</td>
                       <td className="p-4 text-gray-600">{lead.email}</td>
-                      <td className="p-4 text-gray-600">{lead.company || <span className="text-gray-400 italic">None provided</span>}</td>
+                      <td className="p-4 text-gray-600">
+                        {lead.company || <span className="text-gray-400 italic">None provided</span>}
+                      </td>
                       <td className="p-4 text-gray-600">
                         <span className="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full text-xs font-medium border border-blue-100">
                           {lead.source}

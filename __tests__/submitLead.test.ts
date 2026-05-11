@@ -55,7 +55,7 @@ describe('submitLeadAction', () => {
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
-          'X-Candidate-Name': 'Zachary Bernales', // Ensure this matches your code
+          'X-Candidate-Name': 'Zachary Bernales', 
         }),
       })
     );
